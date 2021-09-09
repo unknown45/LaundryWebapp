@@ -1,0 +1,56 @@
+﻿@model IEnumerable<LaundryWebapp.DataSource.MasterItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Buat Baru", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Kode Item
+        </th>
+        <th>
+            Nama Item
+        </th>
+        <th>
+            Deskripsi
+        </th>
+        <th>
+            Durasi /hari
+        </th>
+        <th>
+            Harga /kg
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Duration)
+        </td>
+        <td>
+            Rp @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

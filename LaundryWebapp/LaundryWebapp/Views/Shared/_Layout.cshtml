@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Aplikasi Nira Laundry</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:fuchsia">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -17,13 +17,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Aplikasi Nira Laundry", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @style = "color:black" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (Session["UserId"] != null)
+                    {
+                        <li>@Html.ActionLink("Halaman Utama", "Index", "Home", null, new { @style = "color:black" })</li>
+                        <li>@Html.ActionLink("Pelanggan", "Index", "MasterCustomers", null, new { @style = "color:black" })</li>
+                        <li>@Html.ActionLink("Item", "Index", "MasterItems", null, new { @style = "color:black" })</li>
+                        <li>@Html.ActionLink("Metode Pembayaran", "Index", "MasterPayments", null, new { @style = "color:black" })</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

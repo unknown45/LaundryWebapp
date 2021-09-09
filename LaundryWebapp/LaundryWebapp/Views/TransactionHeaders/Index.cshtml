@@ -1,0 +1,74 @@
+﻿@model IEnumerable<LaundryWebapp.DataSource.TransactionHeader>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Buat Baru", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            No. Transaksi
+        </th>
+        <th>
+            Tanggal Transaksi
+        </th>
+        <th>
+            Potongan Harga
+        </th>
+        <th>
+            Harga Total
+        </th>
+        <th>
+            Estimasi Selesai
+        </th>
+        <th>
+            Status Transaksi
+        </th>
+        <th>
+            Status Pembayaran
+        </th>
+        <th>
+            Nama Pelanggan
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TransactionNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TransactionDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DiscountPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EstimationClear)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaymentStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MasterCustomer.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

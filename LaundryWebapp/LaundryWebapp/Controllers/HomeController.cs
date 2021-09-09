@@ -6,11 +6,16 @@ using System.Web.Mvc;
 
 namespace LaundryWebapp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-            return View();
+            if (Session["UserId"] == null)
+                return RedirectToAction("Login", "Account", null);
+            else
+                return View();
+
         }
 
         public ActionResult About()

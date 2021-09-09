@@ -79,6 +79,7 @@ namespace LaundryWebapp.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    Session["UserId"] = UserManager.Users.FirstOrDefault().Id;
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<LaundryWebapp.DataSource.MasterCustomer>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Buat Pelanggan Baru", "Create")
+</p>
+<div class="col-12">
+    <table class="table">
+        <tr>
+            <th>
+                Nama
+            </th>
+            <th>
+                Alamat
+            </th>
+            <th>
+                No. HP
+            </th>
+            <th>
+                Total Transaksi
+            </th>
+            <th>
+                Kuota Langganan (kg)
+            </th>
+            <th>
+                Berlangganan dari
+            </th>
+            <th>
+                Berlangganan sampai
+            </th>
+            <th>
+                Jumlah langganan
+            </th>
+            <th>
+                Status Langganan
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalTransaction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quota)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscribeFrom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscribeTo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubscribedQty)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsSubscribe)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
