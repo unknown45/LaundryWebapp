@@ -25,6 +25,19 @@
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="250" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
+        <EntityType Name="MasterCustomerItem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CustomerId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ItemId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="nvarchar" MaxLength="250" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="MasterItem">
           <Key>
             <PropertyRef Name="Id" />
@@ -40,6 +53,7 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="250" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="IsSubscribe" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="MasterPayment">
           <Key>
@@ -88,6 +102,30 @@
           <Property Name="ModifiedBy" Type="nvarchar" MaxLength="250" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
+        <Association Name="FK_MasterCustomerItem_MasterCustomer">
+          <End Role="MasterCustomer" Type="Self.MasterCustomer" Multiplicity="1" />
+          <End Role="MasterCustomerItem" Type="Self.MasterCustomerItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MasterCustomer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MasterCustomerItem">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MasterCustomerItem_MasterItem">
+          <End Role="MasterItem" Type="Self.MasterItem" Multiplicity="1" />
+          <End Role="MasterCustomerItem" Type="Self.MasterCustomerItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MasterItem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MasterCustomerItem">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TransactionDetail_MasterItem">
           <End Role="MasterItem" Type="Self.MasterItem" Multiplicity="1" />
           <End Role="TransactionDetail" Type="Self.TransactionDetail" Multiplicity="*" />
@@ -126,10 +164,19 @@
         </Association>
         <EntityContainer Name="LaundryModelStoreContainer">
           <EntitySet Name="MasterCustomer" EntityType="Self.MasterCustomer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MasterCustomerItem" EntityType="Self.MasterCustomerItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MasterItem" EntityType="Self.MasterItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MasterPayment" EntityType="Self.MasterPayment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TransactionDetail" EntityType="Self.TransactionDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TransactionHeader" EntityType="Self.TransactionHeader" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_MasterCustomerItem_MasterCustomer" Association="Self.FK_MasterCustomerItem_MasterCustomer">
+            <End Role="MasterCustomer" EntitySet="MasterCustomer" />
+            <End Role="MasterCustomerItem" EntitySet="MasterCustomerItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MasterCustomerItem_MasterItem" Association="Self.FK_MasterCustomerItem_MasterItem">
+            <End Role="MasterItem" EntitySet="MasterItem" />
+            <End Role="MasterCustomerItem" EntitySet="MasterCustomerItem" />
+          </AssociationSet>
           <AssociationSet Name="FK_TransactionDetail_MasterItem" Association="Self.FK_TransactionDetail_MasterItem">
             <End Role="MasterItem" EntitySet="MasterItem" />
             <End Role="TransactionDetail" EntitySet="TransactionDetail" />
@@ -163,10 +210,11 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
-          <NavigationProperty Name="TransactionHeaders" Relationship="LaundryModel.FK_TransactionHeader_MasterCustomer" FromRole="MasterCustomer" ToRole="TransactionHeader" />
           <Property Name="SubscribedQty" Type="Int32" />
           <Property Name="SubscribeFrom" Type="DateTime" Precision="3" />
           <Property Name="SubscribeTo" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="MasterCustomerItems" Relationship="LaundryModel.FK_MasterCustomerItem_MasterCustomer" FromRole="MasterCustomer" ToRole="MasterCustomerItem" />
+          <NavigationProperty Name="TransactionHeaders" Relationship="LaundryModel.FK_TransactionHeader_MasterCustomer" FromRole="MasterCustomer" ToRole="TransactionHeader" />
         </EntityType>
         <EntityType Name="MasterItem">
           <Key>
@@ -183,7 +231,9 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="TransactionDetails" Relationship="Self.FK_TransactionDetail_MasterItem" FromRole="MasterItem" ToRole="TransactionDetail" />
+          <NavigationProperty Name="MasterCustomerItems" Relationship="LaundryModel.FK_MasterCustomerItem_MasterItem" FromRole="MasterItem" ToRole="MasterCustomerItem" />
+          <Property Name="IsSubscribe" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="TransactionDetails" Relationship="LaundryModel.FK_TransactionDetail_MasterItem" FromRole="MasterItem" ToRole="TransactionDetail" />
         </EntityType>
         <EntityType Name="MasterPayment">
           <Key>
@@ -198,47 +248,126 @@
           <Property Name="ModifiedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
         </EntityType>
+        <EntityContainer Name="LaundryEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="MasterCustomers" EntityType="Self.MasterCustomer" />
+          <EntitySet Name="MasterItems" EntityType="Self.MasterItem" />
+          <EntitySet Name="MasterPayments" EntityType="Self.MasterPayment" />
+          <EntitySet Name="MasterCustomerItems" EntityType="LaundryModel.MasterCustomerItem" />
+          <AssociationSet Name="FK_MasterCustomerItem_MasterCustomer" Association="LaundryModel.FK_MasterCustomerItem_MasterCustomer">
+            <End Role="MasterCustomer" EntitySet="MasterCustomers" />
+            <End Role="MasterCustomerItem" EntitySet="MasterCustomerItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MasterCustomerItem_MasterItem" Association="LaundryModel.FK_MasterCustomerItem_MasterItem">
+            <End Role="MasterItem" EntitySet="MasterItems" />
+            <End Role="MasterCustomerItem" EntitySet="MasterCustomerItems" />
+          </AssociationSet>
+          <EntitySet Name="TransactionDetails" EntityType="LaundryModel.TransactionDetail" />
+          <EntitySet Name="TransactionHeaders" EntityType="LaundryModel.TransactionHeader" />
+          <AssociationSet Name="FK_TransactionHeader_MasterCustomer" Association="LaundryModel.FK_TransactionHeader_MasterCustomer">
+            <End Role="MasterCustomer" EntitySet="MasterCustomers" />
+            <End Role="TransactionHeader" EntitySet="TransactionHeaders" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionDetail_MasterItem" Association="LaundryModel.FK_TransactionDetail_MasterItem">
+            <End Role="MasterItem" EntitySet="MasterItems" />
+            <End Role="TransactionDetail" EntitySet="TransactionDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionDetail_Transaction" Association="LaundryModel.FK_TransactionDetail_Transaction">
+            <End Role="TransactionHeader" EntitySet="TransactionHeaders" />
+            <End Role="TransactionDetail" EntitySet="TransactionDetails" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="MasterCustomerItem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ItemId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="MasterCustomer" Relationship="LaundryModel.FK_MasterCustomerItem_MasterCustomer" FromRole="MasterCustomerItem" ToRole="MasterCustomer" />
+          <NavigationProperty Name="MasterItem" Relationship="LaundryModel.FK_MasterCustomerItem_MasterItem" FromRole="MasterCustomerItem" ToRole="MasterItem" />
+        </EntityType>
+        <Association Name="FK_MasterCustomerItem_MasterCustomer">
+          <End Type="LaundryModel.MasterCustomer" Role="MasterCustomer" Multiplicity="1" />
+          <End Type="LaundryModel.MasterCustomerItem" Role="MasterCustomerItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MasterCustomer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MasterCustomerItem">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MasterCustomerItem_MasterItem">
+          <End Type="LaundryModel.MasterItem" Role="MasterItem" Multiplicity="1" />
+          <End Type="LaundryModel.MasterCustomerItem" Role="MasterCustomerItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MasterItem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MasterCustomerItem">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="TransactionDetail">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TransactionId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ItemId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Weight" Type="Decimal" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ItemId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Weight" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
           <Property Name="Price" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="MasterItem" Relationship="Self.FK_TransactionDetail_MasterItem" FromRole="TransactionDetail" ToRole="MasterItem" />
-          <NavigationProperty Name="TransactionHeader" Relationship="Self.FK_TransactionDetail_Transaction" FromRole="TransactionDetail" ToRole="TransactionHeader" />
+          <NavigationProperty Name="MasterItem" Relationship="LaundryModel.FK_TransactionDetail_MasterItem" FromRole="TransactionDetail" ToRole="MasterItem" />
+          <NavigationProperty Name="TransactionHeader" Relationship="LaundryModel.FK_TransactionDetail_Transaction" FromRole="TransactionDetail" ToRole="TransactionHeader" />
         </EntityType>
         <EntityType Name="TransactionHeader">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TransactionNumber" Type="String" MaxLength="25" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionNumber" Type="String" Nullable="false" MaxLength="25" FixedLength="true" Unicode="true" />
           <Property Name="TransactionDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CustomerId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CustomerId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="DiscountPrice" Type="Int32" Nullable="false" />
           <Property Name="TotalPrice" Type="Int32" Nullable="false" />
           <Property Name="EstimationClear" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Status" Type="String" MaxLength="25" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="PaymentStatus" Type="String" MaxLength="25" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="25" FixedLength="true" Unicode="true" />
+          <Property Name="PaymentStatus" Type="String" Nullable="false" MaxLength="25" FixedLength="true" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="TransactionDetails" Relationship="Self.FK_TransactionDetail_Transaction" FromRole="TransactionHeader" ToRole="TransactionDetail" />
           <NavigationProperty Name="MasterCustomer" Relationship="LaundryModel.FK_TransactionHeader_MasterCustomer" FromRole="TransactionHeader" ToRole="MasterCustomer" />
+          <NavigationProperty Name="TransactionDetails" Relationship="LaundryModel.FK_TransactionDetail_Transaction" FromRole="TransactionHeader" ToRole="TransactionDetail" />
         </EntityType>
+        <Association Name="FK_TransactionHeader_MasterCustomer">
+          <End Type="LaundryModel.MasterCustomer" Role="MasterCustomer" Multiplicity="1" />
+          <End Type="LaundryModel.TransactionHeader" Role="TransactionHeader" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MasterCustomer">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TransactionHeader">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TransactionDetail_MasterItem">
-          <End Role="MasterItem" Type="Self.MasterItem" Multiplicity="1" />
-          <End Role="TransactionDetail" Type="Self.TransactionDetail" Multiplicity="*" />
+          <End Type="LaundryModel.MasterItem" Role="MasterItem" Multiplicity="1" />
+          <End Type="LaundryModel.TransactionDetail" Role="TransactionDetail" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MasterItem">
               <PropertyRef Name="Id" />
@@ -249,45 +378,14 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TransactionDetail_Transaction">
-          <End Role="TransactionHeader" Type="Self.TransactionHeader" Multiplicity="1" />
-          <End Role="TransactionDetail" Type="Self.TransactionDetail" Multiplicity="*" />
+          <End Type="LaundryModel.TransactionHeader" Role="TransactionHeader" Multiplicity="1" />
+          <End Type="LaundryModel.TransactionDetail" Role="TransactionDetail" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TransactionHeader">
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="TransactionDetail">
               <PropertyRef Name="TransactionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="LaundryEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="MasterCustomers" EntityType="Self.MasterCustomer" />
-          <EntitySet Name="MasterItems" EntityType="Self.MasterItem" />
-          <EntitySet Name="MasterPayments" EntityType="Self.MasterPayment" />
-          <EntitySet Name="TransactionDetails" EntityType="Self.TransactionDetail" />
-          <EntitySet Name="TransactionHeaders" EntityType="Self.TransactionHeader" />
-          <AssociationSet Name="FK_TransactionDetail_MasterItem" Association="Self.FK_TransactionDetail_MasterItem">
-            <End Role="MasterItem" EntitySet="MasterItems" />
-            <End Role="TransactionDetail" EntitySet="TransactionDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TransactionDetail_Transaction" Association="Self.FK_TransactionDetail_Transaction">
-            <End Role="TransactionHeader" EntitySet="TransactionHeaders" />
-            <End Role="TransactionDetail" EntitySet="TransactionDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TransactionHeader_MasterCustomer" Association="LaundryModel.FK_TransactionHeader_MasterCustomer">
-            <End Role="MasterCustomer" EntitySet="MasterCustomers" />
-            <End Role="TransactionHeader" EntitySet="TransactionHeaders" />
-          </AssociationSet>
-        </EntityContainer>
-        <Association Name="FK_TransactionHeader_MasterCustomer">
-          <End Type="LaundryModel.MasterCustomer" Role="MasterCustomer" Multiplicity="1" />
-          <End Type="LaundryModel.TransactionHeader" Role="TransactionHeader" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MasterCustomer">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="TransactionHeader">
-              <PropertyRef Name="CustomerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -321,6 +419,7 @@
           <EntitySetMapping Name="MasterItems">
             <EntityTypeMapping TypeName="LaundryModel.MasterItem">
               <MappingFragment StoreEntitySet="MasterItem">
+                <ScalarProperty Name="IsSubscribe" ColumnName="IsSubscribe" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -349,43 +448,57 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="MasterCustomerItems">
+            <EntityTypeMapping TypeName="LaundryModel.MasterCustomerItem">
+              <MappingFragment StoreEntitySet="MasterCustomerItem">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="TransactionDetails">
             <EntityTypeMapping TypeName="LaundryModel.TransactionDetail">
               <MappingFragment StoreEntitySet="TransactionDetail">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
-                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TransactionHeaders">
             <EntityTypeMapping TypeName="LaundryModel.TransactionHeader">
               <MappingFragment StoreEntitySet="TransactionHeader">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="TransactionNumber" ColumnName="TransactionNumber" />
-                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
-                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-                <ScalarProperty Name="DiscountPrice" ColumnName="DiscountPrice" />
-                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
-                <ScalarProperty Name="EstimationClear" ColumnName="EstimationClear" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="EstimationClear" ColumnName="EstimationClear" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="DiscountPrice" ColumnName="DiscountPrice" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="TransactionNumber" ColumnName="TransactionNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

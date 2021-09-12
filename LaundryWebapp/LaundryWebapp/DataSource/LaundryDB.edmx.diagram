@@ -7,12 +7,15 @@
       <Diagram DiagramId="43207c5b094e447386815971b8a002ca" Name="Diagram1">
         <EntityTypeShape EntityType="LaundryModel.MasterCustomer" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LaundryModel.MasterItem" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="LaundryModel.MasterPayment" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LaundryModel.TransactionDetail" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="LaundryModel.TransactionHeader" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
-        <AssociationConnector Association="LaundryModel.FK_TransactionDetail_MasterItem" ManuallyRouted="false" />
-        <AssociationConnector Association="LaundryModel.FK_TransactionDetail_Transaction" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LaundryModel.MasterPayment" Width="1.5" PointX="2.375" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryModel.MasterCustomerItem" Width="1.5" PointX="8" PointY="1.375" />
+        <AssociationConnector Association="LaundryModel.FK_MasterCustomerItem_MasterCustomer" />
+        <AssociationConnector Association="LaundryModel.FK_MasterCustomerItem_MasterItem" />
+        <EntityTypeShape EntityType="LaundryModel.TransactionDetail" Width="1.5" PointX="10.25" PointY="3.75" />
+        <EntityTypeShape EntityType="LaundryModel.TransactionHeader" Width="1.5" PointX="8" PointY="5.875" />
         <AssociationConnector Association="LaundryModel.FK_TransactionHeader_MasterCustomer" />
+        <AssociationConnector Association="LaundryModel.FK_TransactionDetail_MasterItem" />
+        <AssociationConnector Association="LaundryModel.FK_TransactionDetail_Transaction" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

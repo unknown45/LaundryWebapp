@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LaundryWebapp.DataSource;
+using LaundryWebapp.ViewModels;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 
 namespace LaundryWebapp.Controllers
@@ -40,6 +42,7 @@ namespace LaundryWebapp.Controllers
         // GET: MasterCustomers/Create
         public ActionResult Create()
         {
+            ViewBag.ItemId = new SelectList(db.MasterItems.Where(x => x.IsSubscribe == true), "Id", "Name");
             return View();
         }
 
@@ -48,7 +51,7 @@ namespace LaundryWebapp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Address,Phone,SubscribedQty,IsSubscribe,")] MasterCustomer masterCustomer)
+        public ActionResult Create([Bind(Include = "Name,Address,Phone,SubscribedQty,IsSubscribe,ItemId")] CustomerViewModel masterCustomer)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +68,18 @@ namespace LaundryWebapp.Controllers
                 masterCustomer.ModifiedDate = DateTime.Now;
                 masterCustomer.ModifiedBy = User.Identity.GetUserName();
                 masterCustomer.IsActive = true;
-                db.MasterCustomers.Add(masterCustomer);
+                MasterCustomerItem customerItem = new MasterCustomerItem()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ItemId = masterCustomer.ItemId,
+                    CustomerId = masterCustomer.Id,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = User.Identity.GetUserName(),
+                    ModifiedDate = DateTime.Now,
+                    ModifiedBy = User.Identity.GetUserName(),
+                    IsActive = true
+                };
+                db.MasterCustomers.Add(masterCustomer as MasterCustomer);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -85,7 +99,29 @@ namespace LaundryWebapp.Controllers
             {
                 return HttpNotFound();
             }
-            return View(masterCustomer);
+            var ItemList = new SelectList(db.MasterItems.Where(x => x.IsSubscribe == true), "Id", "Name");
+            MasterCustomerItem customerItem = db.MasterCustomerItems.FirstOrDefault(x => x.CustomerId == id);
+            CustomerViewModel result = new CustomerViewModel()
+            {
+                Id = masterCustomer.Id,
+                Name = masterCustomer.Name,
+                Address = masterCustomer.Address,
+                Phone = masterCustomer.Phone,
+                TotalTransaction = masterCustomer.TotalTransaction,
+                IsSubscribe = masterCustomer.IsSubscribe,
+                Quota = masterCustomer.Quota,
+                SubscribedQty = masterCustomer.SubscribedQty,
+                SubscribeFrom = masterCustomer.SubscribeFrom,
+                SubscribeTo = masterCustomer.SubscribeTo,
+                ItemId = customerItem?.ItemId
+            };
+            ItemList.ForEach(x =>
+            {
+                if (x.Value == result.ItemId)
+                    x.Selected = true;
+            });
+            ViewBag.ItemId = ItemList;
+            return View(result);
         }
 
         // POST: MasterCustomers/Edit/5
@@ -93,11 +129,12 @@ namespace LaundryWebapp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Address,Phone,SubscribedQty,IsSubscribe")] MasterCustomer masterCustomer)
+        public ActionResult Edit([Bind(Include = "Id,Address,Phone,SubscribedQty,IsSubscribe,ItemId")] CustomerViewModel masterCustomer)
         {
             if (ModelState.IsValid)
             {
                 var currentData = db.MasterCustomers.FirstOrDefault(x => x.Id == masterCustomer.Id);
+                var currentDataCustItem = db.MasterCustomerItems.FirstOrDefault(x => x.CustomerId == masterCustomer.Id);
                 currentData.Address = masterCustomer.Address;
                 currentData.Phone = masterCustomer.Phone;
                 currentData.SubscribedQty += masterCustomer.SubscribedQty;
@@ -115,6 +152,28 @@ namespace LaundryWebapp.Controllers
                 currentData.ModifiedDate = DateTime.Now;
                 currentData.ModifiedBy = User.Identity.GetUserName();
                 db.Entry(currentData).State = EntityState.Modified;
+
+                if (currentDataCustItem == null)
+                {
+                    currentDataCustItem = new MasterCustomerItem()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        CustomerId = masterCustomer.Id,
+                        ItemId = masterCustomer.ItemId,
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = User.Identity.GetUserName(),
+                        ModifiedDate = DateTime.Now,
+                        ModifiedBy = User.Identity.GetUserName(),
+                        IsActive = true
+                    };
+                    db.MasterCustomerItems.Add(currentDataCustItem);
+                }
+                else
+                {
+                    currentDataCustItem.ItemId = masterCustomer.ItemId;
+                    db.Entry(currentDataCustItem).State = EntityState.Modified;
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

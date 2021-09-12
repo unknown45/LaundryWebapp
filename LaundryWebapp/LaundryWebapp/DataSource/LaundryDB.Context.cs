@@ -28,6 +28,7 @@ namespace LaundryWebapp.DataSource
         public virtual DbSet<MasterCustomer> MasterCustomers { get; set; }
         public virtual DbSet<MasterItem> MasterItems { get; set; }
         public virtual DbSet<MasterPayment> MasterPayments { get; set; }
+        public virtual DbSet<MasterCustomerItem> MasterCustomerItems { get; set; }
         public virtual DbSet<TransactionDetail> TransactionDetails { get; set; }
         public virtual DbSet<TransactionHeader> TransactionHeaders { get; set; }
     }

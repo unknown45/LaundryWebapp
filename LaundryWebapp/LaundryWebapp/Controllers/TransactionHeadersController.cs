@@ -44,6 +44,7 @@ namespace LaundryWebapp.Controllers
             var CustomerList = new SelectList(db.MasterCustomers, "Id", "Name");
             var PaymentList = new SelectList(db.MasterPayments, "Id", "Description");
             ViewBag.CustomerId = CustomerList;
+            ViewBag.Payments = PaymentList;
             return View();
         }
 

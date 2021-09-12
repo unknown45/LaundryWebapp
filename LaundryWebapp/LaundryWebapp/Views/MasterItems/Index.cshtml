@@ -16,80 +16,58 @@
         <div class="table-responsive">
             <div id="dataTableWrapper" class="dataTables_wrapper dt-bootstrap4">
                 <div class="row">
-                    <div class="col-sm-12 col-md-4">
-                        <div id="datTable_length" class="dataTables_length">
-                            <label>
-                                Tampil Data: 
-                                <select class="custom-select custom-select-sm form-control form-control-sm" name="dataTable_length" aria-controls="dataTable">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6"></div>
-                    <div class="col-sm-12 col-md-2">
-                        <div id="dataTable_filter" class="dataTables_filter">
-                            <label>
-                                Cari:
-                                <input class="form-control form-control-sm" type="search" placeholder="" aria-controls="dataTable">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <table id="dataTable" class="table table-bordered dataTable" role="grid" aria-describedby="dataTable_info" style="width:100%" width="100%" cellspacing="1">
-                        <thead>
-                            <tr role="row">
-                                <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width:57px;" aria-sort="ascending">
-                                    Kode Item
-                                </th>
-                                <th class ="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width:61px;" aria-sort="ascending">
-                                    Nama Item
-                                </th>
-                                <th class ="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width:49px;" aria-sort="ascending">
-                                    Deskripsi
-                                </th>
-                                <th class ="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width:57px;" aria-sort="ascending">
-                                    Durasi /hari
-                                </th>
-                                <th class ="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width:57px;" aria-sort="ascending">
-                                    Harga /kg
-                                </th>
-                                <th class ="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width:57px;" aria-sort="ascending">Aksi</th>
+                    <table class="table table-bordered" style="margin:1.5%">
+                        <tr role="row">
+                            <th>
+                                Kode Item
+                            </th>
+                            <th>
+                                Nama Item
+                            </th>
+                            <th>
+                                Deskripsi
+                            </th>
+                            <th>
+                                Durasi /hari
+                            </th>
+                            <th>
+                                Harga /kg
+                            </th>
+                            <th>
+                                Menu Langganan
+                            </th>
+                            <th>Aksi</th>
                         </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Code)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Description)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Duration)
-                                    </td>
-                                    <td>
-                                        Rp @Html.DisplayFor(modelItem => item.Price)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Code)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Duration)
+                                </td>
+                                <td>
+                                    Rp @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsSubscribe)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
                     </table>
                 </div>
-                <div class="row">
+                @*<div class="row">
                     <div class="col-sm-12 col-md-9"></div>
                     <div class="col-sm-12 col-md-3">
                         <div id="dataTable_paginate" class="dataTables_paginate paging_simple_numbers">
@@ -112,7 +90,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div>*@
             </div>            
         </div>
     </div>

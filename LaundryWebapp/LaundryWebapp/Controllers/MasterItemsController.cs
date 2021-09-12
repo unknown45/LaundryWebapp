@@ -48,7 +48,7 @@ namespace LaundryWebapp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Description,Duration,Price")] MasterItem masterItem)
+        public ActionResult Create([Bind(Include = "Name,Description,Duration,Price,IsSubscribe")] MasterItem masterItem)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace LaundryWebapp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,Duration,Price")] MasterItem masterItem)
+        public ActionResult Edit([Bind(Include = "Id,Name,Description,Duration,Price,IsSubscribe")] MasterItem masterItem)
         {
             if (ModelState.IsValid)
             {
@@ -96,6 +96,7 @@ namespace LaundryWebapp.Controllers
                 currentData.Description = masterItem.Description;
                 currentData.Duration = masterItem.Duration;
                 currentData.Price = masterItem.Price;
+                currentData.IsSubscribe = masterItem.IsSubscribe;
                 currentData.ModifiedDate = DateTime.Now;
                 currentData.ModifiedBy = User.Identity.GetUserName();
                 db.Entry(currentData).State = EntityState.Modified;

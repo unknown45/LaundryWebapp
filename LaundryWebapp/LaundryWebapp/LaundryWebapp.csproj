@@ -194,6 +194,9 @@
     <Compile Include="DataSource\MasterCustomer.cs">
       <DependentUpon>LaundryDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataSource\MasterCustomerItem.cs">
+      <DependentUpon>LaundryDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\MasterItem.cs">
       <DependentUpon>LaundryDB.tt</DependentUpon>
     </Compile>
@@ -220,6 +223,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\CustomerViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2175,7 +2179,6 @@
     <Content Include="Views\MasterPayments\Details.cshtml" />
     <Content Include="Views\MasterPayments\Edit.cshtml" />
     <Content Include="Views\MasterPayments\Index.cshtml" />
-    <Content Include="Views\MasterCustomers\Create.cshtml" />
     <Content Include="Views\MasterCustomers\Delete.cshtml" />
     <Content Include="Views\MasterCustomers\Details.cshtml" />
     <Content Include="Views\MasterCustomers\Edit.cshtml" />
@@ -2185,6 +2188,7 @@
     <Content Include="Views\MasterItems\Details.cshtml" />
     <Content Include="Views\MasterItems\Edit.cshtml" />
     <Content Include="Views\MasterItems\Index.cshtml" />
+    <Content Include="Views\MasterCustomers\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

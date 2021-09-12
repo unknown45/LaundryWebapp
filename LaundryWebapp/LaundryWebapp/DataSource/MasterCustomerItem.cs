@@ -12,23 +12,11 @@ namespace LaundryWebapp.DataSource
     using System;
     using System.Collections.Generic;
     
-    public partial class TransactionHeader
+    public partial class MasterCustomerItem
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TransactionHeader()
-        {
-            this.TransactionDetails = new HashSet<TransactionDetail>();
-        }
-    
         public string Id { get; set; }
-        public string TransactionNumber { get; set; }
-        public System.DateTime TransactionDate { get; set; }
         public string CustomerId { get; set; }
-        public int DiscountPrice { get; set; }
-        public int TotalPrice { get; set; }
-        public System.DateTime EstimationClear { get; set; }
-        public string Status { get; set; }
-        public string PaymentStatus { get; set; }
+        public string ItemId { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
@@ -36,7 +24,6 @@ namespace LaundryWebapp.DataSource
         public bool IsActive { get; set; }
     
         public virtual MasterCustomer MasterCustomer { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
+        public virtual MasterItem MasterItem { get; set; }
     }
 }

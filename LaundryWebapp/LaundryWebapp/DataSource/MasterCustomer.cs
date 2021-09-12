@@ -17,6 +17,7 @@ namespace LaundryWebapp.DataSource
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public MasterCustomer()
         {
+            this.MasterCustomerItems = new HashSet<MasterCustomerItem>();
             this.TransactionHeaders = new HashSet<TransactionHeader>();
         }
     
@@ -36,6 +37,8 @@ namespace LaundryWebapp.DataSource
         public Nullable<System.DateTime> SubscribeFrom { get; set; }
         public Nullable<System.DateTime> SubscribeTo { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MasterCustomerItem> MasterCustomerItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionHeader> TransactionHeaders { get; set; }
     }
