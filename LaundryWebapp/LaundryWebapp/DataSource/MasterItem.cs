@@ -19,6 +19,7 @@ namespace LaundryWebapp.DataSource
         {
             this.MasterCustomerItems = new HashSet<MasterCustomerItem>();
             this.TransactionDetails = new HashSet<TransactionDetail>();
+            this.Transactions = new HashSet<Transaction>();
         }
     
         public string Id { get; set; }
@@ -38,5 +39,7 @@ namespace LaundryWebapp.DataSource
         public virtual ICollection<MasterCustomerItem> MasterCustomerItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

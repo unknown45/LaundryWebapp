@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LaundryWebapp.DataSource;
+using LaundryWebapp.ViewModels;
 using Microsoft.AspNet.Identity;
 
 namespace LaundryWebapp.Controllers
@@ -130,6 +131,16 @@ namespace LaundryWebapp.Controllers
             db.MasterItems.Remove(masterItem);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public JsonResult GetItem(string id)
+        {
+            var data = db.MasterItems.Where(x => x.Id == id).Select(x => new ItemViewModel() {
+                Id = x.Id,
+                Name = x.Name,
+                Price = x.Price
+            }).FirstOrDefault();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

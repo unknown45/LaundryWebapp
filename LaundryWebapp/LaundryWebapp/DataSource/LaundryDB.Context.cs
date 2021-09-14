@@ -31,5 +31,6 @@ namespace LaundryWebapp.DataSource
         public virtual DbSet<MasterCustomerItem> MasterCustomerItems { get; set; }
         public virtual DbSet<TransactionDetail> TransactionDetails { get; set; }
         public virtual DbSet<TransactionHeader> TransactionHeaders { get; set; }
+        public virtual DbSet<Transaction> Transactions { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using LaundryWebapp.Enum;
 
 namespace LaundryWebapp.Controllers
 {
+    [Authorize]
     public class TransactionHeadersController : Controller
     {
         private LaundryEntities db = new LaundryEntities();
@@ -41,10 +42,6 @@ namespace LaundryWebapp.Controllers
         // GET: TransactionHeaders/Create
         public ActionResult Create()
         {
-            var CustomerList = new SelectList(db.MasterCustomers, "Id", "Name");
-            var PaymentList = new SelectList(db.MasterPayments, "Id", "Description");
-            ViewBag.CustomerId = CustomerList;
-            ViewBag.Payments = PaymentList;
             return View();
         }
 
@@ -53,7 +50,7 @@ namespace LaundryWebapp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TransactionNumber,TransactionDate,CustomerId,DiscountPrice,TotalPrice,EstimationClear,Status,PaymentStatus,CreatedDate,CreatedBy,ModifiedDate,ModifiedBy,IsActive")] TransactionHeader transactionHeader)
+        public ActionResult Create([Bind(Include = "CustomerId,DiscountPrice,TotalPrice,EstimationClear,PaymentId")] TransactionHeader transactionHeader)
         {
             if (ModelState.IsValid)
             {

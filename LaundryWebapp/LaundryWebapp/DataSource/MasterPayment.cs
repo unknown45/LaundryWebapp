@@ -14,6 +14,13 @@ namespace LaundryWebapp.DataSource
     
     public partial class MasterPayment
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public MasterPayment()
+        {
+            this.TransactionHeaders = new HashSet<TransactionHeader>();
+            this.Transactions = new HashSet<Transaction>();
+        }
+    
         public string Id { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
@@ -22,5 +29,10 @@ namespace LaundryWebapp.DataSource
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
         public bool IsActive { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TransactionHeader> TransactionHeaders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

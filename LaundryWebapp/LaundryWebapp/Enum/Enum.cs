@@ -13,5 +13,11 @@ namespace LaundryWebapp.Enum
             Done,
             Complete
         }
+
+        public enum PaymentStatus
+        {
+            Paid,
+            NotPaid
+        }
     }
 }

@@ -55,29 +55,38 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label col-md-2">Jumlah Langganan</label>
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.SubscribedQty, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
-    </div>
-
-    <div class="form-group">
         <label class="control-label col-md-2">Status Langganan</label>
         <div class="col-md-10">
             <div class="checkbox col-md-5">
-                @Html.EditorFor(model => model.IsSubscribe)
+                @Html.CheckBoxFor(model => model.IsSubscribe, new { @id = "chkSubscribe" })
                 @Html.ValidationMessageFor(model => model.IsSubscribe, "", new { @class = "text-danger" })
             </div>
         </div>
     </div>
 
     <div class="form-group">
+        <label class="control-label col-md-2">Jumlah Langganan</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.SubscribedQty, new { htmlAttributes = new { @class = "form-control", @id = "subscribeQTY" } })
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="control-label col-md-2">Menu Langganan</label>
         <div class="col-md-3">
-            @Html.DropDownList("ItemId", null, htmlAttributes: new { @class = "form-control" })
+            @Html.DropDownListFor(model => model.ItemId, Enumerable.Empty<SelectListItem>(), "Select", new { @class = "form-control", @id = "item" })
             @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
         </div>
     </div>
+    @*<div class="form-group">
+            <label class="control-label col-md-2">Menu Langganan</label>
+            <div class="col-md-3">
+                <select select2="true"
+                        name="item"
+                        id="item"
+                        class="form-control"></select>
+            </div>
+        </div>*@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
@@ -94,3 +103,47 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script>
+    $(document).ready(function () {
+        console.log('@Model.ItemId');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetSelectSubscribeItem", "Select2")',
+            dataType: "json",
+            beforeSend: function () {
+                $("#item").select2({ placeholder: "Mohon tunggu...", data: { id: null, text: null } }).prop("disabled", true);
+            },
+            success: function (result) {
+                var isSubscribe = $('#chkSubscribe').val();
+                if (isSubscribe) {
+                    $("#item").select2({ placeholder: "-- Pilih Menu Langganan --", data: result, allowClear: true }).prop("disabled", false);
+                    $("#item").val('@Model.ItemId').change();
+                }
+                else {
+                    $("#item").select2({ placeholder: "-- Pilih Menu Langganan --", data: result, allowClear: true }).prop("disabled", true);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown)
+                $("#item").select2({ placeholder: "Data not found", data: { id: null, text: null } }).prop("disabled", false);
+            }
+        });
+        $('#chkSubscribe').change(function () {
+            if (this.checked) {
+                $('#item').prop("disabled", false);
+                $('#subscribeQTY').prop("disabled", false);
+            }
+            else {
+                $("#item").val(null).change();
+                $('#item').prop("disabled", true);
+                $('#subscribeQTY').val(0);
+                $('#subscribeQTY').prop("disabled", true);
+            }
+        });
+        if ($('#chkSubscribe').val() == true) {
+            $('#item').prop("disabled", false);
+            $('#subscribeQTY').prop("disabled", false);
+        }
+    });
+</script>

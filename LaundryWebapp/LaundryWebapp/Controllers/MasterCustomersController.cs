@@ -42,7 +42,14 @@ namespace LaundryWebapp.Controllers
         // GET: MasterCustomers/Create
         public ActionResult Create()
         {
-            ViewBag.ItemId = new SelectList(db.MasterItems.Where(x => x.IsSubscribe == true), "Id", "Name");
+            var items = db.MasterItems.Where(x => x.IsSubscribe == true);
+            //items.Append(new MasterItem()
+            //{
+            //    Id = "0",
+            //    Name = "Pilih Menu Langganan"
+            //});
+            var ItemList = new SelectList(items, "Id", "Name");
+            ViewBag.ItemId = ItemList;
             return View();
         }
 
@@ -79,7 +86,22 @@ namespace LaundryWebapp.Controllers
                     ModifiedBy = User.Identity.GetUserName(),
                     IsActive = true
                 };
-                db.MasterCustomers.Add(masterCustomer as MasterCustomer);
+                var resultCustomer = new MasterCustomer()
+                {
+                    Id = masterCustomer.Id,
+                    Name = masterCustomer.Name,
+                    Address = masterCustomer.Address,
+                    Phone = masterCustomer.Phone,
+                    SubscribedQty = masterCustomer.SubscribedQty,
+                    IsSubscribe = masterCustomer.IsSubscribe,
+                    CreatedDate = masterCustomer.CreatedDate,
+                    CreatedBy = masterCustomer.CreatedBy,
+                    ModifiedDate = masterCustomer.ModifiedDate,
+                    ModifiedBy = masterCustomer.ModifiedBy,
+                    IsActive = masterCustomer .IsActive
+                };
+                db.MasterCustomers.Add(resultCustomer);
+                db.MasterCustomerItems.Add(customerItem);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -99,8 +121,8 @@ namespace LaundryWebapp.Controllers
             {
                 return HttpNotFound();
             }
-            var ItemList = new SelectList(db.MasterItems.Where(x => x.IsSubscribe == true), "Id", "Name");
             MasterCustomerItem customerItem = db.MasterCustomerItems.FirstOrDefault(x => x.CustomerId == id);
+            IEnumerable<MasterItem> items = db.MasterItems.Where(x => x.IsSubscribe == true);
             CustomerViewModel result = new CustomerViewModel()
             {
                 Id = masterCustomer.Id,
@@ -115,12 +137,16 @@ namespace LaundryWebapp.Controllers
                 SubscribeTo = masterCustomer.SubscribeTo,
                 ItemId = customerItem?.ItemId
             };
-            ItemList.ForEach(x =>
+            if (customerItem != null)
             {
-                if (x.Value == result.ItemId)
-                    x.Selected = true;
-            });
-            ViewBag.ItemId = ItemList;
+                var ItemList = new SelectList(items, "Id", "Name", customerItem?.ItemId);
+                ViewBag.ItemId = ItemList;
+            }
+            else
+            {
+                var ItemList = new SelectList(items, "Id", "Name");
+                ViewBag.ItemId = ItemList;
+            }
             return View(result);
         }
 
@@ -137,16 +163,16 @@ namespace LaundryWebapp.Controllers
                 var currentDataCustItem = db.MasterCustomerItems.FirstOrDefault(x => x.CustomerId == masterCustomer.Id);
                 currentData.Address = masterCustomer.Address;
                 currentData.Phone = masterCustomer.Phone;
-                currentData.SubscribedQty += masterCustomer.SubscribedQty;
+                currentData.SubscribedQty = masterCustomer.SubscribedQty;
                 currentData.SubscribedQty = !masterCustomer.IsSubscribe ? null : currentData.SubscribedQty;
                 currentData.SubscribeFrom = !masterCustomer.IsSubscribe ? null : currentData.SubscribeFrom;
                 currentData.SubscribeTo = !masterCustomer.IsSubscribe ? null : currentData.SubscribeTo;
                 currentData.Quota = !masterCustomer.IsSubscribe ? null : currentData.Quota;
-                if (masterCustomer.IsSubscribe)
+                if (masterCustomer.IsSubscribe && currentData.IsSubscribe != masterCustomer.IsSubscribe)
                 {
-                    currentData.SubscribeFrom = currentData.IsSubscribe != masterCustomer.IsSubscribe ? DateTime.Now : currentData.SubscribeFrom;
-                    currentData.SubscribeTo = currentData.IsSubscribe != masterCustomer.IsSubscribe ? DateTime.Now.AddMonths(masterCustomer.SubscribedQty.Value) : currentData.SubscribeFrom.Value.AddMonths(currentData.SubscribedQty.Value);
-                    currentData.Quota = currentData.IsSubscribe != masterCustomer.IsSubscribe ? 50 : currentData.Quota + (50 * currentData.SubscribedQty);
+                    currentData.SubscribeFrom = DateTime.Now;
+                    currentData.SubscribeTo = DateTime.Now.AddMonths(masterCustomer.SubscribedQty.Value);
+                    currentData.Quota = currentData.Quota + (50 * currentData.SubscribedQty);
                 }
                 currentData.IsSubscribe = masterCustomer.IsSubscribe;
                 currentData.ModifiedDate = DateTime.Now;
@@ -201,6 +227,8 @@ namespace LaundryWebapp.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             MasterCustomer masterCustomer = db.MasterCustomers.Find(id);
+            MasterCustomerItem masterCustomerItem = db.MasterCustomerItems.FirstOrDefault(x => x.CustomerId == masterCustomer.Id);
+            db.MasterCustomerItems.Remove(masterCustomerItem);
             db.MasterCustomers.Remove(masterCustomer);
             db.SaveChanges();
             return RedirectToAction("Index");

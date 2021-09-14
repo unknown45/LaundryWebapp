@@ -34,9 +34,11 @@ namespace LaundryWebapp.DataSource
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
         public bool IsActive { get; set; }
+        public string PaymentId { get; set; }
     
         public virtual MasterCustomer MasterCustomer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
+        public virtual MasterPayment MasterPayment { get; set; }
     }
 }

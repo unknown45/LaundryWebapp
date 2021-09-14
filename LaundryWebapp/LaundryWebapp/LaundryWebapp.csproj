@@ -175,7 +175,9 @@
     <Compile Include="Controllers\MasterCustomersController.cs" />
     <Compile Include="Controllers\MasterItemsController.cs" />
     <Compile Include="Controllers\MasterPaymentsController.cs" />
+    <Compile Include="Controllers\Select2Controller.cs" />
     <Compile Include="Controllers\TransactionHeadersController.cs" />
+    <Compile Include="Controllers\TransactionsController.cs" />
     <Compile Include="DataSource\LaundryDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -203,6 +205,9 @@
     <Compile Include="DataSource\MasterPayment.cs">
       <DependentUpon>LaundryDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataSource\Transaction.cs">
+      <DependentUpon>LaundryDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataSource\TransactionDetail.cs">
       <DependentUpon>LaundryDB.tt</DependentUpon>
     </Compile>
@@ -224,7 +229,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CustomerViewModel.cs" />
+    <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
+    <Compile Include="ViewModels\Select2ViewModel.cs" />
+    <Compile Include="ViewModels\TransactionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\bootstrap-grid.css" />
@@ -1920,6 +1928,71 @@
     <Content Include="assets\vendor\jquery\jquery.min.js" />
     <Content Include="assets\vendor\jquery\jquery.slim.js" />
     <Content Include="assets\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="assets\vendor\select2\css\select2.css" />
+    <Content Include="assets\vendor\select2\css\select2.min.css" />
+    <Content Include="assets\vendor\select2\js\i18n\af.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ar.js" />
+    <Content Include="assets\vendor\select2\js\i18n\az.js" />
+    <Content Include="assets\vendor\select2\js\i18n\bg.js" />
+    <Content Include="assets\vendor\select2\js\i18n\bn.js" />
+    <Content Include="assets\vendor\select2\js\i18n\bs.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ca.js" />
+    <Content Include="assets\vendor\select2\js\i18n\cs.js" />
+    <Content Include="assets\vendor\select2\js\i18n\da.js" />
+    <Content Include="assets\vendor\select2\js\i18n\de.js" />
+    <Content Include="assets\vendor\select2\js\i18n\dsb.js" />
+    <Content Include="assets\vendor\select2\js\i18n\el.js" />
+    <Content Include="assets\vendor\select2\js\i18n\en.js" />
+    <Content Include="assets\vendor\select2\js\i18n\es.js" />
+    <Content Include="assets\vendor\select2\js\i18n\et.js" />
+    <Content Include="assets\vendor\select2\js\i18n\eu.js" />
+    <Content Include="assets\vendor\select2\js\i18n\fa.js" />
+    <Content Include="assets\vendor\select2\js\i18n\fi.js" />
+    <Content Include="assets\vendor\select2\js\i18n\fr.js" />
+    <Content Include="assets\vendor\select2\js\i18n\gl.js" />
+    <Content Include="assets\vendor\select2\js\i18n\he.js" />
+    <Content Include="assets\vendor\select2\js\i18n\hi.js" />
+    <Content Include="assets\vendor\select2\js\i18n\hr.js" />
+    <Content Include="assets\vendor\select2\js\i18n\hsb.js" />
+    <Content Include="assets\vendor\select2\js\i18n\hu.js" />
+    <Content Include="assets\vendor\select2\js\i18n\hy.js" />
+    <Content Include="assets\vendor\select2\js\i18n\id.js" />
+    <Content Include="assets\vendor\select2\js\i18n\is.js" />
+    <Content Include="assets\vendor\select2\js\i18n\it.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ja.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ka.js" />
+    <Content Include="assets\vendor\select2\js\i18n\km.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ko.js" />
+    <Content Include="assets\vendor\select2\js\i18n\lt.js" />
+    <Content Include="assets\vendor\select2\js\i18n\lv.js" />
+    <Content Include="assets\vendor\select2\js\i18n\mk.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ms.js" />
+    <Content Include="assets\vendor\select2\js\i18n\nb.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ne.js" />
+    <Content Include="assets\vendor\select2\js\i18n\nl.js" />
+    <Content Include="assets\vendor\select2\js\i18n\pl.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ps.js" />
+    <Content Include="assets\vendor\select2\js\i18n\pt-BR.js" />
+    <Content Include="assets\vendor\select2\js\i18n\pt.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ro.js" />
+    <Content Include="assets\vendor\select2\js\i18n\ru.js" />
+    <Content Include="assets\vendor\select2\js\i18n\sk.js" />
+    <Content Include="assets\vendor\select2\js\i18n\sl.js" />
+    <Content Include="assets\vendor\select2\js\i18n\sq.js" />
+    <Content Include="assets\vendor\select2\js\i18n\sr-Cyrl.js" />
+    <Content Include="assets\vendor\select2\js\i18n\sr.js" />
+    <Content Include="assets\vendor\select2\js\i18n\sv.js" />
+    <Content Include="assets\vendor\select2\js\i18n\th.js" />
+    <Content Include="assets\vendor\select2\js\i18n\tk.js" />
+    <Content Include="assets\vendor\select2\js\i18n\tr.js" />
+    <Content Include="assets\vendor\select2\js\i18n\uk.js" />
+    <Content Include="assets\vendor\select2\js\i18n\vi.js" />
+    <Content Include="assets\vendor\select2\js\i18n\zh-CN.js" />
+    <Content Include="assets\vendor\select2\js\i18n\zh-TW.js" />
+    <Content Include="assets\vendor\select2\js\select2.full.js" />
+    <Content Include="assets\vendor\select2\js\select2.full.min.js" />
+    <Content Include="assets\vendor\select2\js\select2.js" />
+    <Content Include="assets\vendor\select2\js\select2.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -2126,7 +2199,6 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
-    <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -2189,11 +2261,18 @@
     <Content Include="Views\MasterItems\Edit.cshtml" />
     <Content Include="Views\MasterItems\Index.cshtml" />
     <Content Include="Views\MasterCustomers\Create.cshtml" />
+    <Content Include="Views\TransactionHeaders\_CreatePartial.cshtml" />
+    <Content Include="Views\Transactions\Create.cshtml" />
+    <Content Include="Views\Transactions\Delete.cshtml" />
+    <Content Include="Views\Transactions\Details.cshtml" />
+    <Content Include="Views\Transactions\Edit.cshtml" />
+    <Content Include="Views\Transactions\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Master\" />
     <Folder Include="Views\Order\" />
+    <Folder Include="Views\Select2\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
