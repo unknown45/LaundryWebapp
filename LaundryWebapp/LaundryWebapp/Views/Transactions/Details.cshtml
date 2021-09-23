@@ -2,145 +2,133 @@
 
 @{
     ViewBag.Title = "Details";
+    var transDate = Model.TransactionDate.ToString("dd-MMM-yyyy");
+    var currDate = DateTime.Now.ToString("dddd MMM yyyy hh:mm:ss");
+    var price = Model.Price.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("id-ID"));
+    var discount = Model.DiscountPrice.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("id-ID"));
 }
 
-<h2>Details</h2>
+    <div class="container">
+        <div class="row">
+            <center><img src="~/assets/img/Nira_Logo.png" width="150" height="150" /></center>
+        </div>
 
-<div>
-    <h4>Transaction</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TransactionNumber)
-        </dt>
+        <table class="table table-responsive-sm">
+            <tr>
+                <td>No. Transaksi</td>
+                <td>@Html.DisplayFor(model => model.TransactionNumber)</td>
+            </tr>
+            <tr>
+                <td>Tgl Transaksi</td>
+                <td>@Html.DisplayFor(model => transDate)</td>
+            </tr>
+            <tr>
+                <td>Nama:</td>
+                <td>@Html.DisplayFor(model => model.MasterCustomer.Name)</td>
+            </tr>
+            <tr>
+                <td>Menu Cucian:</td>
+                <td>@Html.DisplayFor(model => model.MasterItem.Name)</td>
+            </tr>
+            <tr>
+                <td>Berat:</td>
+                <td>@Html.DisplayFor(model => model.Weight) kg</td>
+            </tr>
+            <tr>
+                <td>Potongan Harga:</td>
+                <td>@Html.DisplayFor(model => discount)</td>
+            </tr>
+            <tr>
+                <td>Total Harga:</td>
+                <td>@Html.DisplayFor(model => price)</td>
+            </tr>
+            <tr>
+                <td><button id="btn-print" class="btn btn-default hidden-print">Print</button></td>
+            </tr>
+        </table>
 
-        <dd>
-            @Html.DisplayFor(model => model.TransactionNumber)
-        </dd>
+        @*<div class="row">
+            <center><h4>No. Transaksi @Html.DisplayFor(model => model.TransactionNumber)</h4></center>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TransactionDate)
-        </dt>
+        <div class="row">
+            <center><h4>Tgl Transaksi @Html.DisplayFor(model => transDate)</h4></center>
+        </div>
+        <div class="d-flex">
+            <hr class="my-auto flex-grow-1">
+            <div class="px-4"><center>Detil Transaksi</center></div>
+            <hr class="my-auto flex-grow-1">
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-6">
+                <span style="font-weight:bold">Nama:</span>
+            </div>
+            <div class="col-md-6">
+                <span>@Html.DisplayFor(model => model.MasterCustomer.Name)</span>
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.TransactionDate)
-        </dd>
+        <div class="row">
+            <div class="col-md-6">
+                <span style="font-weight:bold">Menu Cucian:</span>
+            </div>
+            <div class="col-md-6">
+                <span>@Html.DisplayFor(model => model.MasterItem.Name)</span>
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DiscountPrice)
-        </dt>
+        <div class="row">
+            <div class="col-md-6">
+                <span style="font-weight:bold">Berat:</span>
+            </div>
+            <div class="col-md-6">
+                <span>@Html.DisplayFor(model => model.Weight) kg</span>
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.DiscountPrice)
-        </dd>
+        <div class="row">
+            <div class="col-md-6">
+                <span style="font-weight:bold">Potongan Harga:</span>
+            </div>
+            <div class="col-md-6">
+                <span>@Html.DisplayFor(model => discount)</span>
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Weight)
-        </dt>
+        <div class="row">
+            <div class="col-md-6">
+                <span style="font-weight:bold">Total Harga:</span>
+            </div>
+            <div class="col-md-6">
+                <span>@Html.DisplayFor(model => price)</span>
+            </div>
+        </div>
+        <br />
 
-        <dd>
-            @Html.DisplayFor(model => model.Weight)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.EstimationClear)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.EstimationClear)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedBy)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedBy)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MasterCustomer.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MasterCustomer.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MasterPayment.Code)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MasterPayment.Code)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MasterItem.Code)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MasterItem.Code)
-        </dd>
-
-    </dl>
-</div>
-<p>
+        <div class="d-flex">
+            <hr class="my-auto flex-grow-1">
+            <hr class="my-auto flex-grow-1">
+        </div>
+        <div class="row">
+            <center><h5>CP: 085159008482</h5></center>
+        </div>
+        <div class="row">
+            <center><h5>@Html.DisplayFor(model => currDate)</h5></center>
+        </div>
+        <div class="row">
+            <button id="btn-print" class="btn btn-default">Print</button>
+        </div>*@
+    </div>
+@*<p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
-</p>
+</p>*@
+
+<script>
+    $(document).ready(function () {
+        $('#btn-print').click(function () {
+            window.print();
+        });
+    });
+</script>

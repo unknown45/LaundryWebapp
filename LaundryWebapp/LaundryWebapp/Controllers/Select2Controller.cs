@@ -72,5 +72,33 @@ namespace LaundryWebapp.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+
+        public JsonResult GetSelectCustomerItem(string customerId)
+        {
+            db.Configuration.ProxyCreationEnabled = false;
+            List<Select2ViewModel> data = new List<Select2ViewModel>();
+            var query = from item in db.MasterItems
+                   join customerItem in db.MasterCustomerItems on item.Id equals customerItem.ItemId
+                   where customerItem.CustomerId == customerId
+                   select new Select2ViewModel
+                   {
+                       id = item.Id,
+                       text = item.Name
+                   };
+            if (query != null)
+            {
+                data = query.ToList();
+            }
+            else
+            {
+                data = db.MasterItems.Select(x => new Select2ViewModel()
+                {
+                    id = x.Id,
+                    text = x.Name
+                }).ToList();
+            }
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

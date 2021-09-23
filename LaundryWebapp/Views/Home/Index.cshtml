@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="row" style="margin:5%">
+    <div class="col-md-4" style="background-color:deepskyblue">
+        <h2>@Html.ActionLink("Sedang di Proses", "Index", "Transactions", new { Status = "Process" }, null)</h2>
+        <h3>5</h3>
+    </div>
+    <div class="col-md-4" style="background-color:yellow">
+        <h2>@Html.ActionLink("Selesai Cuci", "Index", "Transactions", new { Status = "Done" }, null)</h2>
+        <h3>15</h3>
+    </div>
+    <div class="col-md-4" style="background-color:lightgreen">
+        <h2>@Html.ActionLink("Lunas", "Index", "Transactions", new { Status = "Complete" }, null)</h2>
+        <h3>9</h3>
+    </div>
+</div>

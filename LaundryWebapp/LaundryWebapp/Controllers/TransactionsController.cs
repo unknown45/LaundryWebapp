@@ -6,12 +6,16 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ESCPOS_NET;
+using ESCPOS_NET.Emitters;
+using ESCPOS_NET.Utilities;
 using LaundryWebapp.DataSource;
 using LaundryWebapp.Enum;
 using Microsoft.AspNet.Identity;
 
 namespace LaundryWebapp.Controllers
 {
+    [Authorize]
     public class TransactionsController : Controller
     {
         private LaundryEntities db = new LaundryEntities();
@@ -37,6 +41,13 @@ namespace LaundryWebapp.Controllers
                 return HttpNotFound();
             }
             return View(transaction);
+        }
+
+        [HttpPost]
+        public ActionResult PrintAction()
+        {
+            Print();
+            return RedirectToAction("Details");
         }
 
         // GET: Transactions/Create
@@ -137,6 +148,18 @@ namespace LaundryWebapp.Controllers
             db.Transactions.Remove(transaction);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        private void Print()
+        {
+            var printer = new SerialPrinter("COM3", 57600);
+            var e = new EPSON();
+            printer.Write(
+                ByteSplicer.Combine(
+                    e.CenterAlign(),
+                    e.PrintLine("Nira Laundry")
+                )
+            );
         }
 
         protected override void Dispose(bool disposing)

@@ -75,17 +75,6 @@ namespace LaundryWebapp.Controllers
                 masterCustomer.ModifiedDate = DateTime.Now;
                 masterCustomer.ModifiedBy = User.Identity.GetUserName();
                 masterCustomer.IsActive = true;
-                MasterCustomerItem customerItem = new MasterCustomerItem()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ItemId = masterCustomer.ItemId,
-                    CustomerId = masterCustomer.Id,
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = User.Identity.GetUserName(),
-                    ModifiedDate = DateTime.Now,
-                    ModifiedBy = User.Identity.GetUserName(),
-                    IsActive = true
-                };
                 var resultCustomer = new MasterCustomer()
                 {
                     Id = masterCustomer.Id,
@@ -101,7 +90,21 @@ namespace LaundryWebapp.Controllers
                     IsActive = masterCustomer .IsActive
                 };
                 db.MasterCustomers.Add(resultCustomer);
-                db.MasterCustomerItems.Add(customerItem);
+                if (masterCustomer.IsSubscribe)
+                {
+                    MasterCustomerItem customerItem = new MasterCustomerItem()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ItemId = masterCustomer.ItemId,
+                        CustomerId = masterCustomer.Id,
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = User.Identity.GetUserName(),
+                        ModifiedDate = DateTime.Now,
+                        ModifiedBy = User.Identity.GetUserName(),
+                        IsActive = true
+                    };
+                    db.MasterCustomerItems.Add(customerItem);
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -232,6 +235,16 @@ namespace LaundryWebapp.Controllers
             db.MasterCustomers.Remove(masterCustomer);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public JsonResult GetItem(string customerId)
+        {
+            var data = db.MasterCustomerItems.Where(x => x.CustomerId == customerId).Select(x => new ItemViewModel()
+            {
+                Id = x.ItemId,
+                CustomerId = x.CustomerId
+            }).FirstOrDefault();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

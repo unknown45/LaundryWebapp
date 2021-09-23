@@ -1,0 +1,127 @@
+﻿@model LaundryWebapp.ViewModels.CustomerViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="form-horizontal">
+    <h4>Buat Pelanggan Baru</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label class="control-label col-md-2">Nama</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Alamat</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">No. HP</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Status Langganan</label>
+        <div class="col-md-10">
+            <div class="checkbox col-md-5">
+                @Html.CheckBoxFor(model => model.IsSubscribe, new { @id = "chkSubscribe" })
+                @Html.ValidationMessageFor(model => model.IsSubscribe, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Jumlah Langganan</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.SubscribedQty, new { htmlAttributes = new { @class = "form-control", @min = 0, @disabled = "disabled", @id = "subscribeQTY" } })
+            @Html.ValidationMessageFor(model => model.SubscribedQty, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Menu Langganan</label>
+        <div class="col-md-3">
+            @Html.DropDownListFor(model => model.ItemId, Enumerable.Empty<SelectListItem>(), "Select", new { @class = "form-control", @id = "item" })
+            @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    @*<div class="form-group">
+            <label class="control-label col-md-2">Menu Langganan</label>
+            <div class="col-md-3">
+                <select select2="true"
+                        name="item"
+                        id="item"
+                        class="form-control"></select>
+            </div>
+        </div>*@
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Kembali ke Daftar Pelanggan", "Index")
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetSelectSubscribeItem", "Select2")',
+            dataType: "json",
+            beforeSend: function () {
+                $("#item").select2({ placeholder: "Mohon tunggu...", data: { id: null, text: null } }).prop("disabled", true);
+            },
+            success: function (result) {
+                $("#item").select2({ placeholder: "-- Pilih Menu Langganan --", data: result, allowClear: true }).prop("disabled", true);
+                $("#item").val(null).change();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown)
+                $("#item").select2({ placeholder: "Data not found", data: { id: null, text: null } }).prop("disabled", true);
+            }
+        });
+        $('#chkSubscribe').change(function () {
+            if (this.checked) {
+                $('#item').prop("disabled", false);
+                $('#subscribeQTY').prop("disabled", false);
+            }
+            else {
+                $("#item").val(null).change();
+                $('#item').prop("disabled", true);
+                $('#subscribeQTY').val(0);
+                $('#subscribeQTY').prop("disabled", true);
+            }
+        });
+    });
+</script>

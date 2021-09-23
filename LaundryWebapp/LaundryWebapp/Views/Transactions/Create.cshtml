@@ -24,6 +24,14 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label col-md-2">Menu Cucian</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.ItemId, Enumerable.Empty<SelectListItem>(), "Select", new { @class = "form-control", @id = "item" })
+                @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="control-label col-md-2">Metode Pembayaran</label>
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.PaymentId, Enumerable.Empty<SelectListItem>(), "Select", new { @class = "form-control", @id = "payment" })
@@ -36,14 +44,6 @@
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.PaymentStatus, Enumerable.Empty<SelectListItem>(), "Select", new { @class = "form-control", @id = "paymentStatus" })
                 @Html.ValidationMessageFor(model => model.PaymentStatus, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2">Menu Cucian</label>
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.ItemId, Enumerable.Empty<SelectListItem>(), "Select", new { @class = "form-control", @id = "item" })
-                @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -104,7 +104,6 @@
                 $("#payment").val(null).change();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
                 $("#payment").select2({ placeholder: "Data not found", data: { id: null, text: null } }).prop("disabled", true);
             }
         });
@@ -121,7 +120,6 @@
                 $("#customer").val(null).change();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
                 $("#customer").select2({ placeholder: "Data not found", data: { id: null, text: null } }).prop("disabled", true);
             }
         });
@@ -138,7 +136,6 @@
                 $("#item").val(null).change();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
                 $("#item").select2({ placeholder: "Data not found", data: { id: null, text: null } }).prop("disabled", true);
             }
         });
@@ -155,9 +152,26 @@
                 $("#paymentStatus").val(null).change();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown)
                 $("#paymentStatus").select2({ placeholder: "Data not found", data: { id: null, text: null } }).prop("disabled", true);
             }
+        });
+
+        $('#customer').on('select2:select', function (e) {
+            $.ajax({
+                type: "GET",
+                url: '/MasterCustomers/GetItem?customerId=' + e.currentTarget.value,
+                dataType: "json",
+                success: function (result) {
+                    if (result != null) {
+                        $("#item").val(result.Id).change();
+                        $("#item").prop("disabled", true);
+                    }
+                    else {
+                        $("#item").val(null).change();
+                        $("#item").prop("disabled", false);
+                    }
+                }
+            });
         });
 
         $('#item').on('select2:select', function (e) {
@@ -166,7 +180,6 @@
                 url: '/MasterItems/GetItem?Id=' + e.currentTarget.value,
                 dataType: "json",
                 success: function (result) {
-                    console.log(result)
                     itemPrice = result.Price;
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
